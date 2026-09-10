@@ -112,6 +112,16 @@ layout: simple
         </a>
       </div>
 
+      <div class="col-12 justify-content-center d-flex">
+        <h2 class="organizer">GRANTS</h2>
+      </div>
+
+      <div class="d-flex justify-content-center mobile-sponsor-images mb-5 mt-2 align-items-center gap-5">
+        <a href="https://www.djangoproject.com/" target="_blank" class="w-25">
+          <img src="/static/images/sponsors/django.svg" alt="Django Software Foundation">
+        </a>
+      </div>
+
     </div>
 
   </div>
