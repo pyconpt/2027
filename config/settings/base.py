@@ -8,6 +8,7 @@ database, no authentication and no user generated content.
 from pathlib import Path
 
 import environ
+from django.utils.csp import CSP
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # pycon_portugal_2027/
@@ -47,6 +48,8 @@ INSTALLED_APPS = [
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
+    "pycon_portugal_2027.site.middleware.PermissionsPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -70,6 +73,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.csp",
                 "django.template.context_processors.request",
                 "django.template.context_processors.static",
                 "pycon_portugal_2027.site.context_processors.links",
@@ -82,6 +86,42 @@ TEMPLATES = [
 # ------------------------------------------------------------------------------
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Third parties the pages use: Google Analytics (only after cookie consent, see
+# project.js), the pretalx schedule widget and the Google Maps embed
+# on the venue page. Inline <script>s need {{ csp_nonce }}. Inline styles stay
+# allowed: Markdown content and the pretalx widget use them, and without inline
+# scripts they can't be used to run code.
+GOOGLE_ANALYTICS = ["https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"]
+PRETALX = "https://pretalx.evolutio.pt"
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE, "https://www.googletagmanager.com", PRETALX],
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+    # Self-hosted, see static/fonts/
+    "font-src": [CSP.SELF],
+    "img-src": [CSP.SELF, "data:", PRETALX, *GOOGLE_ANALYTICS],
+    "connect-src": [CSP.SELF, PRETALX, *GOOGLE_ANALYTICS],
+    "frame-src": ["https://www.google.com"],
+    "frame-ancestors": [CSP.NONE],
+    "object-src": [CSP.NONE],
+    "base-uri": [CSP.SELF],
+    "form-action": [CSP.SELF],
+}
+
+# Powerful browser features the site never uses (Django has no setting for this
+# header, see pycon_portugal_2027.site.middleware).
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "camera": [],
+    "display-capture": [],
+    "geolocation": [],
+    "gyroscope": [],
+    "magnetometer": [],
+    "microphone": [],
+    "payment": [],
+    "usb": [],
+}
 
 # LOGGING
 # ------------------------------------------------------------------------------

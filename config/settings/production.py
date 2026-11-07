@@ -15,6 +15,8 @@ SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 SECURE_HSTS_SECONDS = env.int("DJANGO_SECURE_HSTS_SECONDS", default=31536000)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
 SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
+# Load any http:// subresource over https instead of having it blocked as mixed content
+SECURE_CSP = {**SECURE_CSP, "upgrade-insecure-requests": True}  # noqa: F405
 
 # STATIC
 # ------------------------------------------------------------------------------

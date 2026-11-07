@@ -35,6 +35,31 @@ def test_unknown_page_is_404(client):
     assert client.get("/talks/nope/").status_code == 404
 
 
+def test_security_headers(client):
+    response = client.get("/")
+    assert response["X-Frame-Options"] == "DENY"
+    assert response["X-Content-Type-Options"] == "nosniff"
+    assert response["Referrer-Policy"] == "same-origin"
+    assert response["Cross-Origin-Opener-Policy"] == "same-origin"
+    assert "camera=()" in response["Permissions-Policy"]
+    csp = response["Content-Security-Policy"]
+    assert "frame-ancestors 'none'" in csp
+    assert "object-src 'none'" in csp
+    assert "font-src 'self';" in csp
+
+
+def test_inline_scripts_carry_the_csp_nonce(client):
+    response = client.get("/")
+    nonce = re.search(r"'nonce-([^']+)'", response["Content-Security-Policy"]).group(1)
+    html = response.content.decode()
+    # Executable inline scripts (JSON-LD is data, not code, so CSP ignores it)
+    scripts = re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)([^>]*)>", html)
+    assert scripts
+    assert all(f'nonce="{nonce}"' in attrs for attrs in scripts)
+    # Inline event handlers can't take a nonce, so the CSP would block them
+    assert not re.search(r"<[^>]+\son[a-z]+=", html)
+
+
 def test_favicon_redirects_to_logo(client):
     response = client.get("/favicon.ico")
     assert response.status_code == 301
