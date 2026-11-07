@@ -10,7 +10,7 @@ $purple: #ab6bfd;
 $salmon: #ff8c64;
 $white: #ffffff;
 
-$font-display: "Boldonse", "Impact", system-ui, sans-serif;
+$font-display: "Boldonse", "Boldonse Fallback", "Impact", system-ui, sans-serif;
 $font-body: "Cabin", system-ui, -apple-system, "Segoe UI", sans-serif;
 
 $content-width: 1240px;
@@ -28,6 +28,18 @@ $bp-lg: 1024px;
   --purple: #{$purple};
   --salmon: #{$salmon};
   --header-height: 88px; // 21px top offset + 66px logo (see _header.scss)
+}
+
+// Arial Bold scaled to Boldonse's metrics, so text keeps its width while the
+// web font loads (font-display: swap) and the hero doesn't shift sideways.
+// Measured from the font files: Boldonse is ~1.2x wider than Arial Bold.
+@font-face {
+  font-family: "Boldonse Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Roboto Bold"), local("Roboto-Bold");
+  size-adjust: 119.88%;
+  ascent-override: 126.79%;
+  descent-override: 33.37%;
+  line-gap-override: 0%;
 }
 
 *,

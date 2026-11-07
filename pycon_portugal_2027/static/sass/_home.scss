@@ -8,11 +8,13 @@
 // (first row at y=190), words are Boldonse 72px white sitting between the shapes.
 // The Figma values are the maximum; everything scales down with the viewport
 // height so that header + four rows always fit on one screen.
+// --vh is the small viewport (mobile address bar shown), falling back to vh.
 .hero {
-  --hero-size: min(103px, 10vh);
+  --vh: 1vh;
+  --hero-size: min(103px, 10 * var(--vh));
   --hero-gap: calc(var(--hero-size) * 0.39);
-  --hero-row-gap: min(97px, 9vh);
-  --hero-word: min(72px, 7vh);
+  --hero-row-gap: min(97px, 9 * var(--vh));
+  --hero-word: min(72px, 7 * var(--vh));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,7 +35,6 @@
     align-items: center;
     gap: var(--hero-gap);
     width: max-content;
-    margin-inline: auto;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -82,21 +83,63 @@
   }
 }
 
-@media (max-width: base.$bp-lg) {
+@supports (height: 1svh) {
   .hero {
-    --hero-size: min(72px, 10vh);
-    --hero-gap: calc(var(--hero-size) * 0.33);
-    --hero-row-gap: min(56px, 8vh);
-    --hero-word: min(50px, 7vh);
+    --vh: 1svh;
   }
 }
 
+@media (max-width: base.$bp-lg) {
+  .hero {
+    --hero-size: min(72px, 10 * var(--vh));
+    --hero-gap: calc(var(--hero-size) * 0.33);
+    --hero-row-gap: min(56px, 8 * var(--vh));
+    --hero-word: min(50px, 7 * var(--vh));
+  }
+}
+
+// Shapes grow on tall phones; the vw cap keeps "PORTUGAL" inside the screen.
 @media (max-width: base.$bp-md) {
   .hero {
-    --hero-size: min(52px, 9vh);
+    --hero-size: min(64px, 10 * var(--vh), 16vw);
     --hero-gap: calc(var(--hero-size) * 0.3);
-    --hero-row-gap: min(36px, 6vh);
-    --hero-word: min(36px, 6vh);
+    --hero-row-gap: min(36px, 6 * var(--vh));
+    --hero-word: min(44px, 7 * var(--vh), 11vw);
+
+    // Spread the rows over the full hero height instead of a centred block
+    &__rows {
+      flex: 1;
+      justify-content: space-evenly;
+    }
+
+    // Each row has more shapes right of its word than left, so centring the
+    // whole row pushes the word off the left edge on narrow screens. Shift by
+    // half the imbalance (in pill heights, gap = 0.3) to centre the word.
+    &__row {
+      transform: translateX(calc(-50% + var(--row-shift) * var(--hero-size)));
+
+      &:nth-child(1) { --row-shift: 1.275; }
+      &:nth-child(2) { --row-shift: 0.65; }
+      &:nth-child(3) { --row-shift: 1.375; }
+      &:nth-child(4) { --row-shift: 0.925; }
+    }
+  }
+}
+
+// Landscape phones are too short for a full-screen hero: size the shapes
+// for legibility and let the hero fit its content instead.
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero {
+    --hero-size: 44px;
+    --hero-gap: 14px;
+    --hero-row-gap: 24px;
+    --hero-word: 30px;
+    min-height: 0;
+    padding-block: 32px 48px;
+
+    &__rows {
+      flex: none;
+    }
   }
 }
 
