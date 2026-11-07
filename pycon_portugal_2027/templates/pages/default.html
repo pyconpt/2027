@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <article class="page wrap">
+    {# Each Markdown file starts at h2, so give the page its one h1 #}
+    <h1 class="visually-hidden">{{ menu }}</h1>
+    {% for file in files %}
+      {% include 'modules/default.html' with content=file %}
+    {% endfor %}
+  </article>
+{% endblock content %}

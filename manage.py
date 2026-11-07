@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
 import os
 import sys
 from pathlib import Path
@@ -19,9 +20,9 @@ def main():
         ) from exc
 
     # This allows easy placement of apps within the interior
-    # pycon_portugal_2026 directory.
+    # pycon_portugal_2027 directory.
     current_path = Path(__file__).parent.resolve()
-    sys.path.append(str(current_path / "pycon_portugal_2026"))
+    sys.path.append(str(current_path / "pycon_portugal_2027"))
 
     execute_from_command_line(sys.argv)
 

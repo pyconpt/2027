@@ -1,0 +1,24 @@
+{% load static %}
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <p class="site-footer__title">Stay updated with<br>PyCon Portugal news</p>
+    <ul class="social" aria-label="Social media">
+      {% for name, href in social_media.items %}
+        <li>
+          <a href="{{ href }}" target="_blank" rel="noopener" aria-label="PyCon Portugal on {{ name }}">
+            <img src="{% static 'images/external_logo/logo_'|add:name|add:'.svg' %}" alt="" width="32" height="32">
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="wrap site-footer__meta">
+    <p>
+      © {% now "Y" %} PyCon Portugal ·
+      developed in <a href="https://www.python.org/psf/" target="_blank" rel="noopener">Python</a>
+      with <span class="heart">♥</span> by <a href="https://evolutio.pt/" target="_blank" rel="noopener">evolutio</a> ·
+      help us improve on <a href="{{ event.github }}" target="_blank" rel="noopener">GitHub</a> ·
+      <button type="button" class="site-footer__link" data-consent-open>Cookie settings</button>
+    </p>
+  </div>
+</footer>

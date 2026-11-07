@@ -1,0 +1,6 @@
+{% load markdown_extras %}
+{% with content=content|markdown %}
+  {% with layout=content.meta.layout.0|default:"simple" %}
+    {% include 'modules/layout/'|add:layout|add:'.html' %}
+  {% endwith %}
+{% endwith %}

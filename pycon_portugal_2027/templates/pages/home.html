@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  {# HERO #}
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="visually-hidden">PyCon Portugal 2027 · 22–24 April 2027 · Leiria, Portugal</h1>
+    {# Figma: each row is a line of pills and dots with one free-standing word, overflowing the viewport #}
+    <div class="hero__rows" aria-hidden="true">
+      <div class="hero__row">
+        <span class="dot dot--magenta"></span><span class="pill pill--cyan pill--l"></span><span class="hero__word">Leiria</span><span class="pill pill--green pill--s"></span><span class="dot dot--amber"></span><span class="pill pill--green pill--l"></span>
+      </div>
+      <div class="hero__row">
+        <span class="pill pill--orange pill--m"></span><span class="pill pill--amber pill--s"></span><span class="dot dot--purple"></span><span class="hero__word">PyCon</span><span class="dot dot--amber"></span><span class="pill pill--cyan pill--s"></span><span class="dot dot--magenta"></span><span class="pill pill--green pill--m"></span>
+      </div>
+      <div class="hero__row">
+        <span class="pill pill--purple pill--s"></span><span class="dot dot--magenta"></span><span class="pill pill--green pill--m"></span><span class="hero__word">Portugal</span><span class="dot dot--amber"></span><span class="pill pill--orange pill--m"></span><span class="dot dot--magenta"></span><span class="pill pill--cyan pill--l"></span>
+      </div>
+      <div class="hero__row">
+        <span class="pill pill--cyan pill--l"></span><span class="dot dot--amber"></span><span class="dot dot--green"></span><span class="hero__word">2027</span><span class="pill pill--magenta pill--s"></span><span class="dot dot--amber"></span><span class="pill pill--green pill--m"></span><span class="dot dot--purple"></span>
+      </div>
+    </div>
+  </section>
+
+  {# INTRO #}
+  <section class="intro wrap">
+    <h2 class="intro__title text-cyan">We're back for the {{ event.edition }} edition</h2>
+    <div class="intro__body">
+      <p class="intro__dates"><strong>{{ event.dates }}</strong> · {{ event.city }}</p>
+      <p>
+        Whether you are an <strong>experienced programmer</strong>, a <strong>hobby hacker</strong> or an
+        <strong>absolute beginner</strong>, we'd love to welcome you to the Python community.
+      </p>
+      <p>
+        PyCons are hosted all around the world by volunteers from local Python communities.
+        This year we meet in <strong>Leiria</strong>, with the support of
+        <strong>ULO – Universidade de Leiria e do Oeste</strong>.
+      </p>
+      <a class="btn btn--magenta" href="{{ event.tickets }}" target="_blank" rel="noopener">Grab your ticket</a>
+    </div>
+  </section>
+
+  {# LEIRIA #}
+  <section class="section wrap" id="leiria" aria-labelledby="leiria-title">
+    <h2 id="leiria-title" class="section__title text-amber">See you in Leiria</h2>
+    <div class="gallery">
+      <figure class="gallery__item">
+        <img src="{% static 'images/leiria/castle.webp' %}" srcset="{% static 'images/leiria/castle-800.webp' %} 800w, {% static 'images/leiria/castle.webp' %} 1200w" sizes="(min-width: 960px) 400px, 100vw" alt="The medieval castle of Leiria on its wooded hill" width="1200" height="800" loading="lazy">
+        <figcaption>Castelo de Leiria</figcaption>
+      </figure>
+      <figure class="gallery__item">
+        <img src="{% static 'images/leiria/square.webp' %}" srcset="{% static 'images/leiria/square-800.webp' %} 800w, {% static 'images/leiria/square.webp' %} 1200w" sizes="(min-width: 960px) 400px, 100vw" alt="Praça Rodrigues Lobo, the main square of Leiria, with the castle behind" width="1200" height="800" loading="lazy">
+        <figcaption>Praça Rodrigues Lobo</figcaption>
+      </figure>
+      <figure class="gallery__item">
+        <img src="{% static 'images/leiria/old-town.webp' %}" srcset="{% static 'images/leiria/old-town-800.webp' %} 800w, {% static 'images/leiria/old-town.webp' %} 1200w" sizes="(min-width: 960px) 400px, 100vw" alt="Rooftops of the historic centre of Leiria" width="1200" height="800" loading="lazy">
+        <figcaption>The historic centre</figcaption>
+      </figure>
+    </div>
+    <p class="section__note">A university city halfway between Lisbon and Porto, under a medieval castle and a short drive from Batalha, Nazaré and the Atlantic coast.</p>
+    <a class="btn btn--green" href="/information/leiria/">About Leiria</a>
+  </section>
+
+  {# TICKETS #}
+  <section class="section wrap" id="tickets" aria-labelledby="tickets-title">
+    <h2 id="tickets-title" class="section__title text-salmon">Tickets</h2>
+    <div class="cards">
+      <article class="card card--amber">
+        <h3 class="card__title">Student</h3>
+        <p class="card__from">from</p>
+        <p class="card__price">30€</p>
+        <p class="card__text">If you are currently enrolled as a full-time student or are currently without regular income.</p>
+        <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="card card--orange">
+        <h3 class="card__title">Individual</h3>
+        <p class="card__from">from</p>
+        <p class="card__price">75€</p>
+        <p class="card__text">If you are paying your ticket from your personal money and are not being reimbursed by your employer.</p>
+        <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="card card--cyan">
+        <h3 class="card__title">Business</h3>
+        <p class="card__from">from</p>
+        <p class="card__price">125€</p>
+        <p class="card__text">If your employer is paying for the ticket or reimbursing you for your conference expenses.</p>
+        <a class="btn btn--green card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+    <p class="section__note">Early-bird prices. Ticket sales open on 20 November 2026.</p>
+  </section>
+
+  {# IMPORTANT DATES #}
+  <section class="section wrap" id="dates" aria-labelledby="dates-title">
+    <h2 id="dates-title" class="section__title text-green">Important dates</h2>
+    <dl class="dates">
+      <div class="dates__row">
+        <dt class="dates__month text-magenta">November 2026</dt>
+        <dd><a href="/talks/cfp/">20th · Call for Participation opens</a></dd>
+        <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">20th · Early-bird ticket sales open</a></dd>
+      </div>
+      <div class="dates__row">
+        <dt class="dates__month text-orange">December 2026</dt>
+        <dd><a href="/information/grants/">1st · Grant applications open</a></dd>
+        <dd><a href="/talks/cfp/">31st · Call for Participation deadline</a></dd>
+      </div>
+      <div class="dates__row">
+        <dt class="dates__month text-cyan">January 2027</dt>
+        <dd><a href="/talks/selection_process/">Content review &amp; selection</a></dd>
+        <dd><a href="/information/grants/">Grant applications deadline <small>(date to be announced)</small></a></dd>
+      </div>
+      <div class="dates__row">
+        <dt class="dates__month text-purple">February 2027</dt>
+        <dd><a href="/talks/schedule/">Talks &amp; schedule publication</a></dd>
+        <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">Early-bird ticket sales close <small>(date to be announced)</small></a></dd>
+      </div>
+      <div class="dates__row">
+        <dt class="dates__month text-amber">April 2027</dt>
+        <dd>22nd &amp; 23rd · Main conference</dd>
+        <dd>24th · Workshops</dd>
+      </div>
+    </dl>
+  </section>
+
+  {# PREVIOUS EDITIONS #}
+  <section class="section" id="editions" aria-labelledby="editions-title">
+    <div class="wrap editions__head">
+      <h2 id="editions-title" class="section__title text-magenta">Previous editions</h2>
+      <div class="carousel__nav">
+        <button type="button" class="carousel__arrow" data-prev aria-label="Previous"><span aria-hidden="true">←</span></button>
+        <button type="button" class="carousel__arrow" data-next aria-label="Next"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <div class="carousel" data-carousel>
+      <ul class="carousel__track wrap">
+        <li class="edition edition--placeholder edition--cyan">
+          <a href="https://2026.pycon.pt/" target="_blank" rel="noopener">
+            <span class="edition__year">2026</span>
+            <span class="edition__city">Aveiro</span>
+          </a>
+        </li>
+        <li class="edition">
+          <a href="https://2025.pycon.pt/" target="_blank" rel="noopener">
+            <img src="{% static 'images/past_editions/group_photo_cascais.webp' %}" alt="Group photo, PyCon Portugal 2025 in Cascais" width="800" height="534" loading="lazy">
+            <span class="edition__caption">2025 · Cascais</span>
+          </a>
+        </li>
+        <li class="edition">
+          <a href="https://2024.pycon.pt/" target="_blank" rel="noopener">
+            <img src="{% static 'images/past_editions/group_photo_braga.webp' %}" alt="Group photo, PyCon Portugal 2024 in Braga" width="800" height="708" loading="lazy">
+            <span class="edition__caption">2024 · Braga</span>
+          </a>
+        </li>
+        <li class="edition">
+          <a href="https://2023.pycon.pt/" target="_blank" rel="noopener">
+            <img src="{% static 'images/past_editions/group_photo_coimbra.webp' %}" alt="Group photo, PyCon Portugal 2023 in Coimbra" width="800" height="708" loading="lazy">
+            <span class="edition__caption">2023 · Coimbra</span>
+          </a>
+        </li>
+        <li class="edition">
+          <a href="https://2022.pycon.pt/" target="_blank" rel="noopener">
+            <img src="{% static 'images/past_editions/conference_room_porto.webp' %}" alt="Conference room, PyCon Portugal 2022 in Porto" width="800" height="708" loading="lazy">
+            <span class="edition__caption">2022 · Porto</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {# SPONSORS #}
+  <section class="section wrap" id="sponsors" aria-labelledby="sponsors-title">
+    <h2 id="sponsors-title" class="section__title text-cyan">Sponsors</h2>
+
+    <div class="tier">
+      <h3 class="tier__title text-amber">Institutional partner</h3>
+      <ul class="logos">
+        <li><a href="https://www.ulo.pt/" target="_blank" rel="noopener"><img src="{% static 'images/sponsors/ulo.svg' %}" alt="ULO – Universidade de Leiria e do Oeste"></a></li>
+      </ul>
+    </div>
+
+    <div class="tier">
+      <h3 class="tier__title text-purple">Organizer</h3>
+      <ul class="logos">
+        <li><a href="https://www.evolutio.pt/" target="_blank" rel="noopener"><img src="{% static 'images/sponsors/logo-evolutio-branco.svg' %}" alt="evolutio"></a></li>
+      </ul>
+    </div>
+
+    <p class="tier__note">Diamond, Gold, Silver and Grants sponsorships are open. Your logo could be here.</p>
+    <a class="btn btn--magenta" href="/sponsors/sponsorship/">Become a sponsor</a>
+  </section>
+
+  {# FREE TICKETS #}
+  <section class="section wrap" id="free-ticket" aria-labelledby="free-title">
+    <h2 id="free-title" class="section__title text-salmon">Want a free ticket?</h2>
+    <div class="cards">
+      <article class="card card--amber">
+        <h3 class="card__title">CFP</h3>
+        <p class="card__text"><strong>Do you have content to share with the community?</strong></p>
+        <p class="card__text">Call for Participation opens 20 November and closes 31 December 2026. Speakers get in for free.</p>
+        <a class="btn btn--magenta card__cta" href="{{ event.cfp }}" target="_blank" rel="noopener">Submit <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="card card--orange">
+        <h3 class="card__title">Volunteer</h3>
+        <p class="card__text"><strong>Do you want to see what's behind the curtain?</strong></p>
+        <p class="card__text">Volunteer applications will open in early 2027. Get in touch if you can't wait.</p>
+        <a class="btn btn--magenta card__cta" href="/about/contact/">Apply <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="card card--cyan">
+        <h3 class="card__title">Grant</h3>
+        <p class="card__text"><strong>Do you need a push to attend PyCon Portugal?</strong></p>
+        <p class="card__text">Opportunity grant applications open on 1 December 2026.</p>
+        <a class="btn btn--green card__cta" href="/information/grants/">Apply <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </section>
+{% endblock content %}

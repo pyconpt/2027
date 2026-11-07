@@ -1,3 +1,0 @@
-layout: simple
-
-## Coming soon...

@@ -1,0 +1,97 @@
+{% load static seo_extras %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  {% firstof description event.description as page_description %}
+  <title>{% block title %}{% if menu and menu != "Home" %}{{ menu }} · PyCon Portugal 2027{% else %}PyCon Portugal 2027 · 22–24 April · Leiria{% endif %}{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block description %}{{ page_description }}{% endblock description %}">
+  <meta name="author" content="PyCon Portugal">
+  <meta name="theme-color" content="#2A182E">
+  <link rel="canonical" href="{{ event.url }}{{ request.path }}">
+
+  {# Open Graph (Facebook, LinkedIn, Slack, WhatsApp...); X/Twitter falls back to these for title, description and image #}
+  <meta property="og:site_name" content="PyCon Portugal 2027">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ event.url }}{{ request.path }}">
+  <meta property="og:title" content="{% if menu and menu != "Home" %}{{ menu }} · PyCon Portugal 2027{% else %}PyCon Portugal 2027 · 22–24 April · Leiria{% endif %}">
+  <meta property="og:description" content="{{ page_description }}">
+  <meta property="og:image" content="{{ event.url }}{% static 'images/leiria/castle.jpg' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="800">
+  <meta property="og:image:alt" content="The medieval castle of Leiria, host city of PyCon Portugal 2027">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@PyConPT">
+  <meta name="twitter:image:alt" content="The medieval castle of Leiria, host city of PyCon Portugal 2027">
+
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/logo/logo-pycon2027.svg' %}">
+  <link rel="apple-touch-icon" href="{% static 'images/favicons/apple-touch-icon.png' %}">
+
+  {% if structured_data %}{{ structured_data|jsonld }}{% endif %}
+
+  {# Google Analytics, consent mode: everything denied by default, and gtag.js itself is only #}
+  {# loaded by project.js once the visitor accepts the cookie banner #}
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-CMQRE6VNNJ');
+  </script>
+
+  {% block css %}
+    {# crossorigin: font files are CORS requests, so only this connection gets reused for them #}
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    {# Load the font CSS without blocking the first paint (font-display: swap covers the gap) #}
+    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=boldonse:400|cabin:400,500,600,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=boldonse:400|cabin:400,500,600,700&display=swap"></noscript>
+    <link rel="stylesheet" href="{% static 'css/project.min.css' %}">
+  {% endblock css %}
+
+  {% block javascript %}
+    <script defer src="{% static 'js/project.min.js' %}"></script>
+  {% endblock javascript %}
+</head>
+
+<body{% if menu == "Home" %} class="home"{% endif %}>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  {% block navbar %}
+    {% include "modules/header.html" %}
+  {% endblock navbar %}
+
+  <main id="main">
+    {% block content %}{% endblock content %}
+  </main>
+
+  {% block footer %}
+    {% include "modules/footer.html" %}
+  {% endblock footer %}
+
+  {# Cookie consent: shown by project.js until the visitor chooses #}
+  <section class="consent" data-consent data-ga="G-CMQRE6VNNJ" aria-labelledby="consent-title" hidden>
+    <div class="wrap consent__inner">
+      <div class="consent__text">
+        <h2 id="consent-title" class="consent__title">Cookies</h2>
+        <p>
+          With your permission we use Google Analytics cookies to count visits and improve this site.
+          Nothing is loaded until you choose. See our <a href="/conduct/privacy_guide/#cookies">privacy guide</a>.
+        </p>
+      </div>
+      <div class="consent__actions">
+        <button type="button" class="btn btn--green" data-consent-accept>Accept</button>
+        <button type="button" class="btn btn--magenta" data-consent-decline>Decline</button>
+      </div>
+    </div>
+  </section>
+
+  {% block inline_javascript %}{% endblock inline_javascript %}
+</body>
+</html>

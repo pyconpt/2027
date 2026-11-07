@@ -1,0 +1,218 @@
+@use "base";
+
+// Figma: logo 65px at (94, 21); nav items Cabin 700 16px, purple, top 30px,
+// right edge 120px from the frame edge.
+.site-header {
+  position: relative;
+  z-index: 50;
+  padding-top: 21px;
+
+  &__inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__brand {
+    display: block;
+    margin-left: -6px;
+
+    img {
+      display: block;
+      width: 65px;
+      height: auto;
+    }
+  }
+}
+
+.site-nav {
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 36px);
+    margin: 9px 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    position: relative;
+  }
+
+  &__link {
+    display: inline-block;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: base.$purple;
+    font-family: base.$font-body;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: base.$white;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    min-width: 16rem;
+    margin: 0;
+    padding: 0.75rem 0;
+    list-style: none;
+    background: base.$white;
+    color: base.$bg;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+
+    a {
+      display: block;
+      padding: 0.6rem 1.5rem;
+      color: base.$bg;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        background: base.$cyan;
+      }
+    }
+  }
+}
+
+@media (min-width: base.$bp-lg) {
+  .has-dropdown {
+    // keep the menu reachable while the pointer travels down to it
+    > .site-nav__link {
+      padding-bottom: 12px;
+      margin-bottom: -12px;
+    }
+
+    &:hover > .site-nav__dropdown,
+    &:focus-within > .site-nav__dropdown,
+    &.is-open > .site-nav__dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+  }
+}
+
+// Hamburger (below the desktop breakpoint only; the Figma file has no mobile frame)
+.nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 48px;
+  height: 48px;
+  padding: 10px;
+  margin-top: 8px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  span {
+    display: block;
+    height: 3px;
+    border-radius: 3px;
+    background: base.$purple;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  @media (min-width: base.$bp-lg) {
+    display: none;
+  }
+}
+
+@media (max-width: (base.$bp-lg - 1px)) {
+  .site-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    padding: calc(var(--header-height) + 1rem) base.$gutter 3rem;
+    background: base.$bg;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+
+    &__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+    }
+
+    &__item {
+      border-bottom: 1px solid rgba(base.$white, 0.15);
+    }
+
+    &__link {
+      width: 100%;
+      padding: 1rem 0;
+      font-size: 1.25rem;
+      text-align: left;
+    }
+
+    &__dropdown {
+      position: static;
+      min-width: 0;
+      padding: 0 0 1rem;
+      background: none;
+      box-shadow: none;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+
+      a {
+        padding: 0.5rem 0 0.5rem 1rem;
+        color: base.$cyan;
+      }
+    }
+  }
+
+  .has-dropdown > .site-nav__link {
+    pointer-events: none;
+    color: base.$white;
+  }
+
+  .nav-toggle {
+    position: relative;
+    z-index: 45;
+  }
+
+  body.nav-open {
+    overflow: hidden;
+
+    .site-nav {
+      transform: translateX(0);
+    }
+
+    .nav-toggle span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .nav-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  }
+}

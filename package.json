@@ -1,33 +1,19 @@
 {
-  "name": "pycon_portugal_2026",
+  "name": "pycon_portugal_2027",
   "version": "0.1.0",
+  "private": true,
+  "description": "Front-end build for the PyCon Portugal 2027 website (Sass + JS minification)",
   "devDependencies": {
-    "@popperjs/core": "^2.10.2",
-    "autoprefixer": "^10.4.0",
-    "bootstrap": "^5.2.3",
-    "browser-sync": "^3.0.2",
-    "gulp-concat": "^2.6.1",
-    "cssnano": "^7.0.0",
-    "gulp": "^5.0.0",
-    "gulp-imagemin": "^9.1.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^10.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.0.0",
-    "gulp-uglify-es": "^3.0.0",
-    "node-sass-tilde-importer": "^1.0.2",
-    "pixrem": "^5.0.0",
-    "postcss": "^8.3.11",
-    "sass": "^1.93.1"
+    "sass": "^1.108.1",
+    "terser": "^5.51.2"
   },
   "engines": {
-    "node": "24.12"
+    "node": ">=22"
   },
-  "browserslist": [
-    "last 2 versions"
-  ],
   "scripts": {
-    "dev": "gulp",
-    "build": "gulp build"
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "sass --no-source-map --style=compressed pycon_portugal_2027/static/sass/project.scss pycon_portugal_2027/static/css/project.min.css",
+    "build:js": "terser pycon_portugal_2027/static/js/project.js --compress --mangle --output pycon_portugal_2027/static/js/project.min.js",
+    "watch": "sass --watch --no-source-map --style=compressed pycon_portugal_2027/static/sass/project.scss pycon_portugal_2027/static/css/project.min.css"
   }
 }

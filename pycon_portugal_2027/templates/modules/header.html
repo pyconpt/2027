@@ -1,0 +1,33 @@
+{% load static %}
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="site-header__brand" href="/" aria-label="PyCon Portugal 2027 home">
+      <img src="{% static 'images/logo/logo-pycon2027.svg' %}" alt="PyCon Portugal 2027" width="65" height="66">
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul class="site-nav__list">
+        {% for name, entry in site_menu.items %}
+          {% if entry.items %}
+            <li class="site-nav__item has-dropdown">
+              <button type="button" class="site-nav__link" aria-expanded="false">{{ name }}</button>
+              <ul class="site-nav__dropdown">
+                {% for label, href in entry.items %}
+                  <li><a href="{{ href }}">{{ label }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            <li class="site-nav__item">
+              <a class="site-nav__link" href="{{ entry }}" target="_blank" rel="noopener">{{ name }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>

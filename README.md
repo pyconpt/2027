@@ -1,68 +1,64 @@
-# My Awesome Project
+# PyCon Portugal 2027
 
-pycon 2026
+Website for PyCon Portugal 2027, 22–24 April 2027 in Leiria, Portugal: <https://2027.pycon.pt>
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+A small Django site that renders Markdown files. There is no database, no authentication and no
+user generated content: Django is only used for templates, URL routing and static files.
 
-## Settings
+## How the site works
 
-Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getting-started/settings.html).
+- Pages are Markdown files under `pycon_portugal_2027/content/<menu>/<submenu>/`. Every `.md` file in a
+  folder is rendered, in alphabetical order, at `/<menu>/<submenu>/`. Each file starts with a front-matter
+  block between `---` lines; its `layout:` key selects the wrapper in `templates/modules/layout/`
+  (`simple` or `centered`).
+- The navigation menu, event links (tickets, CFP) and social links live in
+  `pycon_portugal_2027/site/context_processors.py`.
+- The home page is a regular template: `templates/pages/home.html`.
+- Styles are Sass in `pycon_portugal_2027/static/sass/` (design tokens in `_base.scss`) and are compiled
+  into `static/css/project.min.css`; `static/js/project.js` is minified into `project.min.js`. Both
+  compiled files are committed, so Python-only setups work without Node.
+- Fonts (Boldonse, Cabin) are loaded from [Bunny Fonts](https://fonts.bunny.net/).
 
-## Basic Commands
+## Local development
 
-### Setting Up Your Users
+Without Docker:
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+    uv sync
+    uv run python manage.py runserver
 
-- To create a **superuser account**, use this command:
+To change styles or scripts:
 
-      uv run python manage.py createsuperuser
+    npm install
+    npm run build        # compile Sass + minify JS once
+    npm run watch        # recompile Sass on change
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+With Docker:
 
-### Type checks
+    make up              # or: docker compose -f docker-compose.local.yml up
+    make manage check
 
-Running type checks with mypy:
-
-    uv run mypy pycon_portugal_2026
-
-### Test coverage
-
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    uv run coverage run -m pytest
-    uv run coverage html
-    uv run open htmlcov/index.html
-
-#### Running tests with pytest
+### Tests, linting and type checks
 
     uv run pytest
+    uv run ruff check .
+    uv run mypy pycon_portugal_2027 config
 
-### Live reloading and Sass CSS compilation
+### Dependencies
 
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html#using-webpack-or-gulp).
-
-### Sentry
-
-Sentry is an error logging aggregator service. You can sign up for a free account at <https://sentry.io/signup/?code=cookiecutter> or download and host it yourself.
-The system is set up with reasonable defaults, including 404 logging and integration with the WSGI application.
-
-You must set the DSN url in production.
+Python dependencies are pinned in `pyproject.toml` and locked in `uv.lock` (`uv lock`).
+Front-end build dependencies are in `package.json` / `package-lock.json`.
 
 ## Deployment
 
-The following details how to deploy this application.
+Docker Compose production stack (Traefik with Let's Encrypt + Django served by gunicorn and WhiteNoise):
+see `docker-compose.production.yml`. Static files are collected at container start.
 
-### Docker
+Create `.envs/.production/.django` (not committed) with:
 
-See detailed [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-with-docker.html).
+    DJANGO_SETTINGS_MODULE=config.settings.production
+    DJANGO_SECRET_KEY=<long random string>
+    DJANGO_ALLOWED_HOSTS=2027.pycon.pt
 
-### Custom Bootstrap Compilation
+Then:
 
-The generated CSS is set up with automatic Bootstrap recompilation with variables of your choice.
-Bootstrap v5 is installed using npm and customised by tweaking your variables in `static/sass/custom_bootstrap_vars`.
-
-You can find a list of available variables [in the bootstrap source](https://github.com/twbs/bootstrap/blob/v5.1.3/scss/_variables.scss), or get explanations on them in the [Bootstrap docs](https://getbootstrap.com/docs/5.1/customize/sass/).
-
-Bootstrap's javascript as well as its dependencies are concatenated into a single file: `static/js/vendors.js`.
+    docker compose -f docker-compose.production.yml up --build -d

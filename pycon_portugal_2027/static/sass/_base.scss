@@ -1,0 +1,199 @@
+// Design tokens (from the Figma file "pyconpt27") and global styles
+
+$bg: #2a182e;
+$magenta: #cf1684;
+$cyan: #20def4;
+$green: #21fd99;
+$amber: #fbb249;
+$orange: #f05b28;
+$purple: #ab6bfd;
+$salmon: #ff8c64;
+$white: #ffffff;
+
+$font-display: "Boldonse", "Impact", system-ui, sans-serif;
+$font-body: "Cabin", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+$content-width: 1240px;
+$gutter: 20px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+
+:root {
+  --bg: #{$bg};
+  --magenta: #{$magenta};
+  --cyan: #{$cyan};
+  --green: #{$green};
+  --amber: #{$amber};
+  --orange: #{$orange};
+  --purple: #{$purple};
+  --salmon: #{$salmon};
+  --header-height: 88px; // 21px top offset + 66px logo (see _header.scss)
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: $bg;
+  color: $white;
+  font-family: $font-body;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: $cyan;
+}
+
+.wrap {
+  width: min(100% - 2 * $gutter, $content-width);
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: $gutter;
+  top: -100px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: $magenta;
+  color: $white;
+  font-weight: 700;
+
+  &:focus {
+    top: $gutter;
+  }
+}
+
+// Text colour helpers
+.text-magenta { color: $magenta; }
+.text-cyan { color: $cyan; }
+.text-green { color: $green; }
+.text-amber { color: $amber; }
+.text-orange { color: $orange; }
+.text-purple { color: $purple; }
+.text-salmon { color: $salmon; }
+
+// Buttons: Boldonse pills
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  padding: 0.9em 1.6em 0.75em;
+  border: 0;
+  border-radius: 999px;
+  font-family: $font-display;
+  font-size: clamp(0.9rem, 1.6vw, 1.5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+
+  // Arrow glyph sits below the cap height; nudge it up to the caps' centre
+  > span[aria-hidden="true"] {
+    display: inline-block;
+    transform: translateY(-0.2em);
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
+  &--magenta {
+    background: $magenta;
+    color: $white;
+  }
+
+  &--green {
+    background: $green;
+    color: $bg;
+  }
+}
+
+.section {
+  padding-block: clamp(3rem, 8vw, 7rem);
+}
+
+.section__title {
+  margin: 0 0 clamp(1.5rem, 4vw, 3rem);
+  font-family: $font-display;
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.section__note {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+// Photo gallery (home page "Leiria" strip and markdown content pages)
+.gallery {
+  display: grid;
+  gap: $gutter;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  margin: 2rem 0;
+
+  &__item {
+    margin: 0;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 1rem;
+    background: rgba($white, 0.06);
+  }
+
+  figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $purple;
+  }
+
+  &--wide {
+    grid-template-columns: 1fr;
+  }
+}
+
+::selection {
+  background: $magenta;
+  color: $white;
+}

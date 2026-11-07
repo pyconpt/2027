@@ -28,43 +28,19 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: 'Host(`2026.pycon.pt`)'
+      rule: 'Host(`2027.pycon.pt`)'
       entryPoints:
         - web-secure
-      middlewares:
-        - csrf
       service: django
       tls:
         # https://doc.traefik.io/traefik/routing/routers/#certresolver
         certResolver: letsencrypt
-
-    web-media-router:
-      rule: 'Host(`2026.pycon.pt`) && PathPrefix(`/media/`)'
-      entryPoints:
-        - web-secure
-      middlewares:
-        - csrf
-      service: django-media
-      tls:
-        certResolver: letsencrypt
-
-  middlewares:
-    csrf:
-      # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
-      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
-      headers:
-        hostsProxyHeaders: ['X-CSRFToken']
 
   services:
     django:
       loadBalancer:
         servers:
           - url: http://django:5000
-
-    django-media:
-      loadBalancer:
-        servers:
-          - url: http://nginx:80
 
 providers:
   # https://doc.traefik.io/traefik/master/providers/file/

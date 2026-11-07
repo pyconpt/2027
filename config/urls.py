@@ -1,28 +1,29 @@
 from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import include, path
+from django.templatetags.static import static
+from django.urls import path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 
-from pycon_portugal_2026.site.views import default_view, landing_page_view
+from pycon_portugal_2027.site.views import default_view
+from pycon_portugal_2027.site.views import robots_txt
+from pycon_portugal_2027.site.views import sitemap_xml
+
+
+class FaviconView(RedirectView):
+    permanent = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        return static("images/logo/logo-pycon2027.svg")
+
 
 urlpatterns = [
-
-    path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    path("users/", include("pycon_portugal_2026.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
     path("", default_view, name="home"),
-    #path("", landing_page_view, name="landing_page"),
-    path("zencoder", TemplateView.as_view(template_name="pages/zencoder.html"), name="zencoder"),
+    path("favicon.ico", FaviconView.as_view()),
+    path("robots.txt", robots_txt, name="robots"),
+    path("sitemap.xml", sitemap_xml, name="sitemap"),
     path("<slug:menu>/", default_view, name="menu-view"),
-    path("<slug:menu>/<slug:submenu>/", default_view, name="submenu-view")
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    path("<slug:menu>/<slug:submenu>/", default_view, name="submenu-view"),
+]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
@@ -45,7 +46,3 @@ if settings.DEBUG:
         ),
         path("500/", default_views.server_error),
     ]
-    if "debug_toolbar" in settings.INSTALLED_APPS:
-        import debug_toolbar
-
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
