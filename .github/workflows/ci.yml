@@ -1,0 +1,103 @@
+# CI only. Deployment is pull-based: the production host polls this repo
+# every few minutes and deploys `main` once every check here is green.
+# There are no deploy secrets or host credentials in this repository.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.14' # what production runs — keep in sync with .python-version
+
+jobs:
+  lint:
+    name: ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --locked
+      - run: uv run ruff check .
+
+  tests:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --locked
+      - run: uv run pytest
+
+  django:
+    name: check + collectstatic + page smoke test (production settings)
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      DJANGO_READ_DOT_ENV_FILE: 'False'
+      DJANGO_SECRET_KEY: ci-only-not-a-secret-ci-only-not-a-secret-ci-only-not-a-secret
+      DJANGO_ALLOWED_HOSTS: 2027.pycon.pt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      # Same install the production host does (uv sync --no-dev).
+      - run: uv sync --locked --no-dev
+      - name: Django system checks (deploy profile)
+        run: uv run python manage.py check --deploy
+      - name: collectstatic (catches broken static references)
+        run: uv run python manage.py collectstatic --no-input
+      - name: Smoke-test the home page and every content page
+        run: |
+          uv run python - <<'EOF'
+          import pathlib, sys
+          import django
+          django.setup()
+          from django.test import Client
+
+          # Every folder under content/<menu>/<submenu>/ that holds .md files
+          # is rendered at /<menu>/<submenu>/ (see README).
+          root = pathlib.Path("pycon_portugal_2027/content")
+          urls = {"/"}
+          for md in root.rglob("*.md"):
+              rel = md.parent.relative_to(root)
+              if rel.parts:
+                  urls.add("/" + "/".join(rel.parts) + "/")
+
+          client = Client(HTTP_HOST="2027.pycon.pt")
+          bad = [(u, client.get(u, secure=True).status_code) for u in sorted(urls)]
+          bad = [(u, s) for u, s in bad if s != 200]
+          print(f"checked {len(urls)} pages")
+          if bad:
+              print("non-200 responses:", bad)
+              sys.exit(1)
+          EOF
+
+  assets:
+    name: compiled CSS/JS are in sync with the sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Fail if the committed build output differs from a fresh build
+        # The production host has no Node: it serves whatever CSS/JS is
+        # committed. Forgetting to rebuild after an SCSS change ships stale styles.
+        run: git diff --exit-code --stat -- pycon_portugal_2027/static/css pycon_portugal_2027/static/js
