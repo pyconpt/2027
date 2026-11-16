@@ -5,7 +5,7 @@ import datetime as dt
 from django.utils import timezone
 
 # Until these days the pretix shop and the pretalx CFP are closed, so their links show "coming soon"
-TICKET_SALES_OPEN = dt.date(2026, 11, 20)
+TICKET_SALES_OPEN = dt.date(2026, 11, 16)
 CFP_OPEN = dt.date(2026, 11, 20)
 
 EVENT = {
