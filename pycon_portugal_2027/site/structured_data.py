@@ -74,7 +74,7 @@ def event():
                 "availability": "https://schema.org/"
                 + ("InStock" if timezone.localdate() >= TICKET_SALES_OPEN else "PreOrder"),
             }
-            for name, price in (("Student", "30"), ("Individual", "75"), ("Business", "125"))
+            for name, price in (("Student", "25"), ("Individual", "70"), ("Business", "120"))
         ],
     }
 
