@@ -36,7 +36,11 @@
         This year we meet in <strong>Leiria</strong>, with the support of
         <strong>ULO – Universidade de Leiria e do Oeste</strong>.
       </p>
-      <a class="btn btn--magenta" href="{{ event.tickets }}" target="_blank" rel="noopener">Grab your ticket</a>
+      {% if tickets_open %}
+        <a class="btn btn--magenta" href="{{ event.tickets }}" target="_blank" rel="noopener">Grab your ticket</a>
+      {% else %}
+        <a class="btn btn--magenta" href="#tickets">Grab your ticket <span class="badge badge--light">Coming soon</span></a>
+      {% endif %}
     </div>
   </section>
 
@@ -63,28 +67,40 @@
 
   {# TICKETS #}
   <section class="section wrap" id="tickets" aria-labelledby="tickets-title">
-    <h2 id="tickets-title" class="section__title text-salmon">Tickets</h2>
+    <h2 id="tickets-title" class="section__title text-salmon">Tickets{% if not tickets_open %} <span class="badge badge--title">Coming soon</span>{% endif %}</h2>
     <div class="cards">
       <article class="card card--amber">
         <h3 class="card__title">Student</h3>
         <p class="card__from">from</p>
         <p class="card__price">30€</p>
         <p class="card__text">If you are currently enrolled as a full-time student or are currently without regular income.</p>
-        <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% if tickets_open %}
+          <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% else %}
+          <span class="btn btn--soon card__cta">Coming soon</span>
+        {% endif %}
       </article>
       <article class="card card--orange">
         <h3 class="card__title">Individual</h3>
         <p class="card__from">from</p>
         <p class="card__price">75€</p>
         <p class="card__text">If you are paying your ticket from your personal money and are not being reimbursed by your employer.</p>
-        <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% if tickets_open %}
+          <a class="btn btn--magenta card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% else %}
+          <span class="btn btn--soon card__cta">Coming soon</span>
+        {% endif %}
       </article>
       <article class="card card--cyan">
         <h3 class="card__title">Business</h3>
         <p class="card__from">from</p>
         <p class="card__price">125€</p>
         <p class="card__text">If your employer is paying for the ticket or reimbursing you for your conference expenses.</p>
-        <a class="btn btn--green card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% if tickets_open %}
+          <a class="btn btn--green card__cta" href="{{ event.tickets }}" target="_blank" rel="noopener">Buy ticket <span aria-hidden="true">→</span></a>
+        {% else %}
+          <span class="btn btn--soon card__cta">Coming soon</span>
+        {% endif %}
       </article>
     </div>
     <p class="section__note">Early-bird prices. Ticket sales open on 20 November 2026.</p>
@@ -97,7 +113,11 @@
       <div class="dates__row">
         <dt class="dates__month text-magenta">November 2026</dt>
         <dd><a href="/talks/cfp/">20th · Call for Participation opens</a></dd>
-        <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">20th · Early-bird ticket sales open</a></dd>
+        {% if tickets_open %}
+          <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">20th · Early-bird ticket sales open</a></dd>
+        {% else %}
+          <dd>20th · Early-bird ticket sales open</dd>
+        {% endif %}
       </div>
       <div class="dates__row">
         <dt class="dates__month text-orange">December 2026</dt>
@@ -112,7 +132,11 @@
       <div class="dates__row">
         <dt class="dates__month text-purple">February 2027</dt>
         <dd><a href="/talks/schedule/">Talks &amp; schedule publication</a></dd>
-        <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">Early-bird ticket sales close <small>(date to be announced)</small></a></dd>
+        {% if tickets_open %}
+          <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">Early-bird ticket sales close <small>(date to be announced)</small></a></dd>
+        {% else %}
+          <dd>Early-bird ticket sales close <small>(date to be announced)</small></dd>
+        {% endif %}
       </div>
       <div class="dates__row">
         <dt class="dates__month text-amber">April 2027</dt>
@@ -197,7 +221,11 @@
         <h3 class="card__title">CFP</h3>
         <p class="card__text"><strong>Do you have content to share with the community?</strong></p>
         <p class="card__text">Call for Participation opens 20 November and closes 31 December 2026. Speakers get in for free.</p>
-        <a class="btn btn--magenta card__cta" href="{{ event.cfp }}" target="_blank" rel="noopener">Submit <span aria-hidden="true">→</span></a>
+        {% if cfp_open %}
+          <a class="btn btn--magenta card__cta" href="{{ event.cfp }}" target="_blank" rel="noopener">Submit <span aria-hidden="true">→</span></a>
+        {% else %}
+          <span class="btn btn--soon card__cta">Coming soon</span>
+        {% endif %}
       </article>
       <article class="card card--orange">
         <h3 class="card__title">Volunteer</h3>

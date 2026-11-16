@@ -1,5 +1,13 @@
 """Site wide links: navigation menu, event services and social media."""
 
+import datetime as dt
+
+from django.utils import timezone
+
+# Until these days the pretix shop and the pretalx CFP are closed, so their links show "coming soon"
+TICKET_SALES_OPEN = dt.date(2026, 11, 20)
+CFP_OPEN = dt.date(2026, 11, 20)
+
 EVENT = {
     "name": "PyCon Portugal 2027",
     "url": "https://2027.pycon.pt",
@@ -71,4 +79,6 @@ def links(request):
         "event": EVENT,
         "site_menu": SITE_MENU,
         "social_media": SOCIAL_MEDIA,
+        "tickets_open": timezone.localdate() >= TICKET_SALES_OPEN,
+        "cfp_open": timezone.localdate() >= CFP_OPEN,
     }

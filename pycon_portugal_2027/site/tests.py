@@ -1,9 +1,11 @@
+import datetime as dt
 import json
 import re
 
 import pytest
 from django.conf import settings
 
+from pycon_portugal_2027.site import context_processors
 from pycon_portugal_2027.site.context_processors import SITE_MENU
 from pycon_portugal_2027.site.templatetags import markdown_extras
 from pycon_portugal_2027.site.views import front_matter
@@ -79,7 +81,6 @@ def structured_data(response):
 def test_sitemap_lists_every_content_page(client):
     urls = sitemap_urls(client)
     assert "/" in urls
-    assert "/tickets/" in urls
     assert set(menu_urls()) <= set(urls)
     for url in urls:
         assert client.get(url).status_code == 200, url
@@ -91,7 +92,7 @@ def test_robots_points_to_sitemap(client):
     assert b"Sitemap: https://2027.pycon.pt/sitemap.xml" in response.content
 
 
-@pytest.mark.parametrize("url", ["/talks/cfp/", "/information/", "/tickets/", "/sponsors/sponsorship/"])
+@pytest.mark.parametrize("url", ["/talks/cfp/", "/information/", "/sponsors/sponsorship/"])
 def test_pages_have_their_own_description(client, url):
     home = client.get("/").content.decode()
     page = client.get(url).content.decode()
@@ -134,6 +135,21 @@ def test_markdown_static_urls_go_through_static(monkeypatch):
         '<a href="https://example.com/static/x.png">x</a><img src="/static/images/missing.png">'
         "<p>Files live in /static/images/a.webp</p>"
     )
+
+
+@pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 19), False), (dt.date(2026, 11, 20), True)])
+def test_ticket_links_wait_for_sales_to_open(client, monkeypatch, today, is_open):
+    monkeypatch.setattr(context_processors.timezone, "localdate", lambda: today)
+    html = client.get("/").content.decode()
+    assert ("Coming soon" in html) is not is_open
+    assert ("Buy ticket" in html) is is_open
+    # the intro button points at the ticket prices until the shop opens
+    assert ('href="#tickets">Grab your ticket' in html) is not is_open
+    # nothing links to the closed pretix shop; the nav item is shown but disabled
+    assert (f'href="{context_processors.EVENT["tickets"]}"' in html) is is_open
+    assert ("site-nav__link--disabled" in html) is not is_open
+    # the CFP opens on the same day
+    assert (f'href="{context_processors.EVENT["cfp"]}"' in html) is is_open
 
 
 def test_page_structured_data_has_breadcrumbs(client):

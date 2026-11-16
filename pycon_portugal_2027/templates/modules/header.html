@@ -23,7 +23,12 @@
             </li>
           {% else %}
             <li class="site-nav__item">
-              <a class="site-nav__link" href="{{ entry }}" target="_blank" rel="noopener">{{ name }}</a>
+              {% if name == "Tickets" and not tickets_open %}
+                {# the pretix shop isn't open yet: show the item, but don't link to it #}
+                <span class="site-nav__link site-nav__link--disabled" aria-disabled="true">{{ name }} <span class="badge">Soon</span></span>
+              {% else %}
+                <a class="site-nav__link" href="{{ entry }}" target="_blank" rel="noopener">{{ name }}</a>
+              {% endif %}
             </li>
           {% endif %}
         {% endfor %}

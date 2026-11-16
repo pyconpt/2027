@@ -152,6 +152,55 @@ a {
     background: $green;
     color: $bg;
   }
+
+  // Placeholder for a call to action that isn't live yet (not a link)
+  &--soon {
+    background: none;
+    border: 2px dashed currentColor;
+    color: inherit;
+    cursor: default;
+    white-space: nowrap;
+
+    // "Coming soon" is wider than "Buy ticket →": keep it on one line in a 300px card
+    &.card__cta {
+      justify-content: center;
+      font-size: clamp(0.9rem, 1.2vw, 1.125rem);
+    }
+
+    &:hover {
+      transform: none;
+      filter: none;
+    }
+  }
+}
+
+// Small status pill, e.g. "Coming soon" next to the ticket links before sales open
+.badge {
+  display: inline-block;
+  padding: 0.3em 0.65em 0.25em;
+  border-radius: 999px;
+  background: $amber;
+  color: $bg;
+  font-family: $font-body;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  &--light {
+    background: $white;
+    color: $magenta;
+  }
+
+  // next to a .section__title: scale with the heading but stay readable
+  &--title {
+    font-size: max(0.875rem, 0.3em);
+    margin-left: 0.4em;
+    transform: translateY(-0.15em);
+  }
 }
 
 .section {

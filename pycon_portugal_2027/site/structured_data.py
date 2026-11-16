@@ -1,15 +1,13 @@
 """schema.org JSON-LD for search engines: the organization, the website, the event and breadcrumbs."""
 
-import datetime as dt
-
 from django.templatetags.static import static
 from django.utils import timezone
 
 from pycon_portugal_2027.site.context_processors import EVENT
 from pycon_portugal_2027.site.context_processors import SOCIAL_MEDIA
+from pycon_portugal_2027.site.context_processors import TICKET_SALES_OPEN
 
 SITE = EVENT["url"]
-TICKET_SALES_OPEN = dt.date(2026, 11, 20)
 ORGANIZATION_ID = f"{SITE}/#organization"
 WEBSITE_ID = f"{SITE}/#website"
 EVENT_ID = f"{SITE}/#event"
