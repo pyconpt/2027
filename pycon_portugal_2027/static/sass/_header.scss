@@ -41,7 +41,9 @@
   }
 
   &__link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
     padding: 0;
     background: none;
     border: 0;
@@ -57,6 +59,13 @@
     &:hover,
     &:focus-visible {
       color: base.$white;
+    }
+
+    // not a link yet (e.g. Tickets before sales open): no hover, "not allowed" cursor
+    &--disabled,
+    &--disabled:hover {
+      color: base.$purple;
+      cursor: not-allowed;
     }
   }
 
