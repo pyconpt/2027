@@ -13,7 +13,7 @@ class FaviconView(RedirectView):
     permanent = True
 
     def get_redirect_url(self, *args, **kwargs):
-        return static("images/logo/logo-pycon2027.svg")
+        return static("images/logo/logo-pycon2027.png")
 
 
 urlpatterns = [
