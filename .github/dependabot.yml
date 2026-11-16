@@ -1,0 +1,15 @@
+# Keeps the GitHub Actions used in .github/workflows up to date.
+# setup-uv has no floating major tags, so it is pinned to an exact version
+# and only moves when Dependabot opens a PR for it.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # one PR for all action bumps instead of one per action
+    groups:
+      github-actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci
