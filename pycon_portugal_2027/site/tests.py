@@ -65,7 +65,7 @@ def test_inline_scripts_carry_the_csp_nonce(client):
 def test_favicon_redirects_to_logo(client):
     response = client.get("/favicon.ico")
     assert response.status_code == 301
-    assert response["Location"].endswith("logo-pycon2027.svg")
+    assert response["Location"].endswith("logo-pycon2027.png")
 
 
 def sitemap_urls(client):
