@@ -137,18 +137,23 @@ def test_markdown_static_urls_go_through_static(monkeypatch):
     )
 
 
-@pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 19), False), (dt.date(2026, 11, 20), True)])
+@pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 15), False), (dt.date(2026, 11, 16), True)])
 def test_ticket_links_wait_for_sales_to_open(client, monkeypatch, today, is_open):
     monkeypatch.setattr(context_processors.timezone, "localdate", lambda: today)
     html = client.get("/").content.decode()
-    assert ("Coming soon" in html) is not is_open
+    assert ('badge--title">Coming soon' in html) is not is_open
     assert ("Buy ticket" in html) is is_open
     # the intro button points at the ticket prices until the shop opens
     assert ('href="#tickets">Grab your ticket' in html) is not is_open
     # nothing links to the closed pretix shop; the nav item is shown but disabled
     assert (f'href="{context_processors.EVENT["tickets"]}"' in html) is is_open
     assert ("site-nav__link--disabled" in html) is not is_open
-    # the CFP opens on the same day
+
+
+@pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 19), False), (dt.date(2026, 11, 20), True)])
+def test_cfp_link_waits_for_the_cfp_to_open(client, monkeypatch, today, is_open):
+    monkeypatch.setattr(context_processors.timezone, "localdate", lambda: today)
+    html = client.get("/").content.decode()
     assert (f'href="{context_processors.EVENT["cfp"]}"' in html) is is_open
 
 
