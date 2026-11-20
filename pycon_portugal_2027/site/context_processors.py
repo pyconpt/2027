@@ -7,6 +7,14 @@ from django.utils import timezone
 # Until these days the pretix shop and the pretalx CFP are closed, so their links show "coming soon"
 TICKET_SALES_OPEN = dt.date(2026, 11, 16)
 CFP_OPEN = dt.date(2026, 11, 20)
+# The CFP closes at midnight on 31 December 2026, Anywhere on Earth (UTC-12)
+CFP_CLOSE = dt.datetime(2027, 1, 1, tzinfo=dt.timezone(dt.timedelta(hours=-12)))
+
+# The home page banner links to the "during the conference" page from a week before until the last day
+CONFERENCE_START = dt.date(2027, 4, 22)
+CONFERENCE_END = dt.date(2027, 4, 24)
+CONFERENCE_INFO_FROM = CONFERENCE_START - dt.timedelta(weeks=1)
+CONFERENCE_INFO_URL = "/information/during_the_conference/"
 
 EVENT = {
     "name": "PyCon Portugal 2027",
@@ -75,10 +83,14 @@ SOCIAL_MEDIA = {
 
 
 def links(request):
+    today = timezone.localdate()
     return {
         "event": EVENT,
         "site_menu": SITE_MENU,
         "social_media": SOCIAL_MEDIA,
-        "tickets_open": timezone.localdate() >= TICKET_SALES_OPEN,
-        "cfp_open": timezone.localdate() >= CFP_OPEN,
+        "tickets_open": today >= TICKET_SALES_OPEN,
+        "cfp_open": today >= CFP_OPEN and timezone.now() < CFP_CLOSE,
+        "cfp_closed": timezone.now() >= CFP_CLOSE,
+        "conference_info": CONFERENCE_INFO_FROM <= today <= CONFERENCE_END,
+        "conference_info_url": CONFERENCE_INFO_URL,
     }

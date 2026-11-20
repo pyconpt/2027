@@ -50,6 +50,13 @@
     color: base.$white;
     white-space: nowrap;
   }
+
+  // the link to the "during the conference" page, around the conference days
+  &__cta {
+    align-self: center;
+    margin: var(--hero-row-gap) 16px 0;
+    text-align: center;
+  }
 }
 
 .pill,
@@ -311,6 +318,13 @@
       font-size: 0.75em;
       opacity: 0.75;
     }
+  }
+
+  // a date that has already come
+  &__check {
+    margin-left: 0.35em;
+    color: base.$green;
+    font-weight: 700;
   }
 }
 
