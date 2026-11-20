@@ -42,6 +42,8 @@ Network details will be announced here and at the venue.
 
 PyCon Portugal follows a [Code of Conduct](/conduct/code_of_conduct/). If something happens to you, or you see it happening to someone else, contact the Code of Conduct team right away, in Slack or at [conduct@pycon.pt](mailto:conduct@pycon.pt). Your report will be treated confidentially.
 
+<hr class="green-line">
+
 ## Need help?
 
 Look for the organisers and volunteers at the venue, or write to [2027@pycon.pt](mailto:2027@pycon.pt). Join the conversation on the [PyCon Portugal Slack](https://join.slack.com/t/pyconportugal/shared_invite/zt-1ckszg1ye-QDgxx3lOkC15Ocal8xhCSg){:target="_blank"}.

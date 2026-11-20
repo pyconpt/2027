@@ -3,7 +3,7 @@
 
 {% block content %}
   {# HERO #}
-  <section class="hero" aria-labelledby="hero-title">
+  <section class="hero{% if conference_info %} hero--cta{% endif %}" aria-labelledby="hero-title">
     <h1 id="hero-title" class="visually-hidden">PyCon Portugal 2027 · 22–24 April 2027 · Leiria, Portugal</h1>
     {# Figma: each row is a line of pills and dots with one free-standing word, overflowing the viewport #}
     <div class="hero__rows" aria-hidden="true">

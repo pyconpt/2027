@@ -90,9 +90,18 @@
   }
 }
 
+// Shrink the shapes a little to keep the conference link on the first screen
+.hero--cta {
+  --vh: 0.85vh;
+}
+
 @supports (height: 1svh) {
   .hero {
     --vh: 1svh;
+  }
+
+  .hero--cta {
+    --vh: 0.85svh;
   }
 }
 
