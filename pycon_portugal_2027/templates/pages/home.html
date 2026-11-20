@@ -3,7 +3,7 @@
 
 {% block content %}
   {# HERO #}
-  <section class="hero" aria-labelledby="hero-title">
+  <section class="hero{% if conference_info %} hero--cta{% endif %}" aria-labelledby="hero-title">
     <h1 id="hero-title" class="visually-hidden">PyCon Portugal 2027 · 22–24 April 2027 · Leiria, Portugal</h1>
     {# Figma: each row is a line of pills and dots with one free-standing word, overflowing the viewport #}
     <div class="hero__rows" aria-hidden="true">
@@ -20,6 +20,9 @@
         <span class="pill pill--cyan pill--l"></span><span class="dot dot--amber"></span><span class="dot dot--green"></span><span class="hero__word">2027</span><span class="pill pill--magenta pill--s"></span><span class="dot dot--amber"></span><span class="pill pill--green pill--m"></span><span class="dot dot--purple"></span>
       </div>
     </div>
+    {% if conference_info %}
+      <a class="btn btn--magenta hero__cta" href="{{ conference_info_url }}">At the conference? All the info you need <span aria-hidden="true">→</span></a>
+    {% endif %}
   </section>
 
   {# INTRO #}
@@ -103,46 +106,21 @@
         {% endif %}
       </article>
     </div>
-    <p class="section__note">Early-bird prices. Ticket sales open on 16 November 2026.</p>
+    <p class="section__note">Early-bird prices.{% if not tickets_open %} Ticket sales open on 16 November 2026.{% endif %}</p>
   </section>
 
   {# IMPORTANT DATES #}
   <section class="section wrap" id="dates" aria-labelledby="dates-title">
     <h2 id="dates-title" class="section__title text-green">Important dates</h2>
     <dl class="dates">
-      <div class="dates__row">
-        <dt class="dates__month text-magenta">November 2026</dt>
-        {% if tickets_open %}
-          <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">16th · Early-bird ticket sales open</a></dd>
-        {% else %}
-          <dd>16th · Early-bird ticket sales open</dd>
-        {% endif %}
-        <dd><a href="/talks/cfp/">20th · Call for Participation opens</a></dd>
-      </div>
-      <div class="dates__row">
-        <dt class="dates__month text-orange">December 2026</dt>
-        <dd><a href="/information/grants/">1st · Grant applications open</a></dd>
-        <dd><a href="/talks/cfp/">31st · Call for Participation deadline</a></dd>
-      </div>
-      <div class="dates__row">
-        <dt class="dates__month text-cyan">January 2027</dt>
-        <dd><a href="/talks/selection_process/">Content review &amp; selection</a></dd>
-        <dd><a href="/information/grants/">Grant applications deadline <small>(date to be announced)</small></a></dd>
-      </div>
-      <div class="dates__row">
-        <dt class="dates__month text-purple">February 2027</dt>
-        <dd><a href="/talks/schedule/">Talks &amp; schedule publication</a></dd>
-        {% if tickets_open %}
-          <dd><a href="{{ event.tickets }}" target="_blank" rel="noopener">Early-bird ticket sales close <small>(date to be announced)</small></a></dd>
-        {% else %}
-          <dd>Early-bird ticket sales close <small>(date to be announced)</small></dd>
-        {% endif %}
-      </div>
-      <div class="dates__row">
-        <dt class="dates__month text-amber">April 2027</dt>
-        <dd>22nd &amp; 23rd · Main conference</dd>
-        <dd>24th · Workshops</dd>
-      </div>
+      {% for month in important_dates %}
+        <div class="dates__row">
+          <dt class="dates__month text-{{ month.colour }}">{{ month.month|date:"F Y" }}</dt>
+          {% for date in month.dates %}
+            <dd>{% if date.href %}<a href="{{ date.href }}"{% if date.external %} target="_blank" rel="noopener"{% endif %}>{% endif %}{% if date.day %}{{ date.day }} · {% endif %}{{ date.label }}{% if date.tba %} <small>(date to be announced)</small>{% endif %}{% if date.href %}</a>{% endif %}{% if date.done %} <span class="dates__check" title="Done"><span aria-hidden="true">✓</span><span class="visually-hidden">(done)</span></span>{% endif %}</dd>
+          {% endfor %}
+        </div>
+      {% endfor %}
     </dl>
   </section>
 
@@ -223,6 +201,8 @@
         <p class="card__text">Call for Participation opens 20 November and closes 31 December 2026. Speakers get in for free.</p>
         {% if cfp_open %}
           <a class="btn btn--magenta card__cta" href="{{ event.cfp }}" target="_blank" rel="noopener">Submit <span aria-hidden="true">→</span></a>
+        {% elif cfp_closed %}
+          <span class="btn btn--soon card__cta">CFP closed</span>
         {% else %}
           <span class="btn btn--soon card__cta">Coming soon</span>
         {% endif %}

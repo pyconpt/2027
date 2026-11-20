@@ -1,11 +1,13 @@
 import datetime as dt
 import json
 import re
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.conf import settings
 
 from pycon_portugal_2027.site import context_processors
+from pycon_portugal_2027.site import important_dates
 from pycon_portugal_2027.site.context_processors import SITE_MENU
 from pycon_portugal_2027.site.templatetags import markdown_extras
 from pycon_portugal_2027.site.views import front_matter
@@ -137,9 +139,17 @@ def test_markdown_static_urls_go_through_static(monkeypatch):
     )
 
 
+def freeze(monkeypatch, when):
+    """Make ``when`` (a datetime, or a date at noon in Lisbon) the current time of the site."""
+    if not isinstance(when, dt.datetime):
+        when = dt.datetime.combine(when, dt.time(12), tzinfo=ZoneInfo(settings.TIME_ZONE))
+    # timezone.localdate() reads timezone.now() too
+    monkeypatch.setattr(context_processors.timezone, "now", lambda: when)
+
+
 @pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 15), False), (dt.date(2026, 11, 16), True)])
 def test_ticket_links_wait_for_sales_to_open(client, monkeypatch, today, is_open):
-    monkeypatch.setattr(context_processors.timezone, "localdate", lambda: today)
+    freeze(monkeypatch, today)
     html = client.get("/").content.decode()
     assert ('badge--title">Coming soon' in html) is not is_open
     assert ("Buy ticket" in html) is is_open
@@ -150,11 +160,77 @@ def test_ticket_links_wait_for_sales_to_open(client, monkeypatch, today, is_open
     assert ("site-nav__link--disabled" in html) is not is_open
 
 
-@pytest.mark.parametrize(("today", "is_open"), [(dt.date(2026, 11, 19), False), (dt.date(2026, 11, 20), True)])
-def test_cfp_link_waits_for_the_cfp_to_open(client, monkeypatch, today, is_open):
-    monkeypatch.setattr(context_processors.timezone, "localdate", lambda: today)
+@pytest.mark.parametrize(
+    ("now", "is_open", "is_closed"),
+    [
+        (dt.date(2026, 11, 19), False, False),
+        (dt.date(2026, 11, 20), True, False),
+        # the deadline is midnight on 31 December Anywhere on Earth, noon on 1 January in UTC
+        (dt.datetime(2027, 1, 1, 11, 59, tzinfo=dt.UTC), True, False),
+        (dt.datetime(2027, 1, 1, 12, tzinfo=dt.UTC), False, True),
+    ],
+)
+def test_cfp_link_follows_the_cfp(client, monkeypatch, now, is_open, is_closed):
+    freeze(monkeypatch, now)
     html = client.get("/").content.decode()
     assert (f'href="{context_processors.EVENT["cfp"]}"' in html) is is_open
+    assert ("CFP closed" in html) is is_closed
+
+
+@pytest.mark.parametrize(
+    ("today", "done"),
+    [
+        (dt.date(2026, 11, 15), 0),
+        # ticket sales and the CFP are open
+        (dt.date(2026, 11, 20), 2),
+        # January's dates are only known by the month: they get a check once it ends
+        (dt.date(2027, 1, 31), 4),
+        (dt.date(2027, 2, 1), 6),
+        # every important date
+        (dt.date(2027, 4, 24), 10),
+    ],
+)
+def test_important_dates_get_a_check_once_they_come(client, monkeypatch, today, done):
+    freeze(monkeypatch, today)
+    html = client.get("/").content.decode()
+    assert html.count('class="dates__check"') == done
+
+
+def test_important_dates_are_listed_by_month(client):
+    html = client.get("/").content.decode()
+    months = re.findall(r'<dt class="dates__month text-\w+">([^<]+)</dt>', html)
+    assert months == ["November 2026", "December 2026", "January 2027", "February 2027", "April 2027"]
+    assert "20th · Call for Participation opens" in html
+    assert "22nd &amp; 23rd · Main conference" in html
+    assert "Grant applications deadline <small>(date to be announced)</small>" in html
+
+
+@pytest.mark.parametrize(
+    ("n", "expected"), [(1, "1st"), (2, "2nd"), (3, "3rd"), (4, "4th"), (11, "11th"), (22, "22nd")]
+)
+def test_ordinal(n, expected):
+    assert important_dates.ordinal(n) == expected
+
+
+@pytest.mark.parametrize(
+    ("today", "is_shown"),
+    [
+        (dt.date(2027, 4, 14), False),
+        (dt.date(2027, 4, 15), True),
+        (dt.date(2027, 4, 24), True),
+        (dt.date(2027, 4, 25), False),
+    ],
+)
+def test_banner_links_to_the_conference_info_around_the_conference(client, monkeypatch, today, is_shown):
+    freeze(monkeypatch, today)
+    html = client.get("/").content.decode()
+    assert (f'href="{context_processors.CONFERENCE_INFO_URL}"' in html) is is_shown
+
+
+def test_conference_info_page_renders(client):
+    response = client.get(context_processors.CONFERENCE_INFO_URL)
+    assert response.status_code == 200
+    assert b"During the conference" in response.content
 
 
 def test_page_structured_data_has_breadcrumbs(client):

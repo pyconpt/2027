@@ -3,8 +3,10 @@ from pathlib import Path
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
+from django.utils import timezone
 from markdown import Markdown
 
+from pycon_portugal_2027.site import important_dates
 from pycon_portugal_2027.site import structured_data
 from pycon_portugal_2027.site.context_processors import PAGE_TITLES
 
@@ -23,7 +25,11 @@ def default_view(request, menu="home", submenu=None):
         return render(
             request,
             "pages/home.html",
-            {"menu": "Home", "structured_data": structured_data.graph(structured_data.event())},
+            {
+                "menu": "Home",
+                "important_dates": important_dates.by_month(timezone.localdate()),
+                "structured_data": structured_data.graph(structured_data.event()),
+            },
         )
 
     # ``menu`` and ``submenu`` are slugs (see config/urls.py), so they can't
