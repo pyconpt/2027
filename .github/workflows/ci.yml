@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v6
+      - uses: astral-sh/setup-uv@v10.4.0 # no floating major tags since v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: uv sync --locked
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v6
+      - uses: astral-sh/setup-uv@v10.4.0 # no floating major tags since v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: uv sync --locked
@@ -51,7 +51,7 @@ jobs:
       DJANGO_ALLOWED_HOSTS: 2027.pycon.pt
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3 # no floating major tags since v6
+      - uses: astral-sh/setup-uv@v10.4.0 # no floating major tags since v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       # Same install the production host does (uv sync --no-dev).
