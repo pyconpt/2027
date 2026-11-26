@@ -1,0 +1,9 @@
+<p class="md__cta">
+  {% if cfp_open %}
+    <a class="btn btn--magenta" href="{{ event.cfp }}" target="_blank" rel="noopener">Submit a proposal <span aria-hidden="true">→</span></a>
+  {% elif cfp_closed %}
+    <span class="btn btn--soon">Submissions closed</span>
+  {% else %}
+    <span class="btn btn--soon">Coming soon</span>
+  {% endif %}
+</p>

@@ -1,3 +1,4 @@
+{% load markdown_extras %}
 <section class="md">
-  {{ content.html|safe }}
+  {% render_content content.html %}
 </section>

@@ -13,6 +13,8 @@ The **Call for Proposals (CFP)** opens on **20 November 2026** on [pretalx](http
 
 If you think you have something great to talk about – submit your idea! If you are unsure, talk it over with somebody, or go to Slack to find previous speakers and participants to discuss your idea with. When in doubt, submit your talk 😉!
 
+[[cfp_button]]
+
 ### CfP powered by:
 
 [![pretalx](/static/images/other/pretalx.svg){:class='secondary-logo'}](https://pretalx.com/p/about/){:target="_blank"}
