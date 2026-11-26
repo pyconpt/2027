@@ -178,6 +178,28 @@ def test_cfp_link_follows_the_cfp(client, monkeypatch, now, is_open, is_closed):
 
 
 @pytest.mark.parametrize(
+    ("now", "button"),
+    [
+        (dt.date(2026, 11, 19), '<span class="btn btn--soon">Coming soon</span>'),
+        (
+            dt.date(2026, 11, 20),
+            (
+                f'<a class="btn btn--magenta" href="{context_processors.EVENT["cfp"]}" target="_blank" rel="noopener">'
+                "Submit a proposal"
+            ),
+        ),
+        (dt.datetime(2027, 1, 1, 12, tzinfo=dt.UTC), '<span class="btn btn--soon">Submissions closed</span>'),
+    ],
+)
+def test_cfp_page_button_follows_the_cfp(client, monkeypatch, now, button):
+    freeze(monkeypatch, now)
+    html = client.get("/talks/cfp/").content.decode()
+    assert button in html
+    # the [[cfp_button]] placeholder is replaced, not shown
+    assert "[[" not in html
+
+
+@pytest.mark.parametrize(
     ("today", "done"),
     [
         (dt.date(2026, 11, 15), 0),

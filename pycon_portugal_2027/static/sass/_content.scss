@@ -59,7 +59,8 @@
     margin-bottom: 0.4em;
   }
 
-  a {
+  // buttons keep their own colours
+  a:not(.btn) {
     color: base.$cyan;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
@@ -68,6 +69,11 @@
     &:focus-visible {
       color: base.$green;
     }
+  }
+
+  // a call to action between paragraphs ([[cfp_button]])
+  &__cta {
+    margin-block: 2rem;
   }
 
   strong {
